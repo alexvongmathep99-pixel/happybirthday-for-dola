@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Dola</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --wine: #3a0d20;
+    --rose: #e0577a;
+    --rose-deep: #c73a5e;
+    --rose-soft: #f2a3b6;
+    --gold: #d9b26a;
+    --cream: #f2e6d8;
+    --cream-2: #ece0d0;
+    --ink: #4a2130;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin:0;
+    padding:0;
+    min-height:100%;
+    background: radial-gradient(130% 110% at 50% 0%, #6e1836 0%, #4a1128 42%, #24081a 100%);
+    font-family: 'Jost', sans-serif;
+    color: var(--cream);
+    overflow-x:hidden;
+  }
+
+  #sky{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  .drift{
+    position:absolute;
+    bottom:-10%;
+    color: var(--rose-soft);
+    opacity:.5;
+    filter: drop-shadow(0 0 6px rgba(224,87,122,.35));
+    animation-name: rise;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes rise{
+    0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity:0; }
+    8%   { opacity:.55; }
+    92%  { opacity:.3; }
+    100% { transform: translateY(-115vh) translateX(var(--drift-x,20px)) rotate(20deg); opacity:0; }
+  }
+
+  main{
+    position:relative;
+    z-index:2;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding: 6vh 5vw;
+    gap: 18px;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap: 8px;
+    font-family:'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--rose-soft);
+    letter-spacing:.02em;
+  }
+  .brand svg{ width:16px; height:16px; opacity:.85; }
+
+  /* generic little-heart shape: give the host element a width/height, this draws the heart to fill it */
+  .heartlet{ position:absolute; }
+  .heartlet::before, .heartlet::after{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:155%;
+    background: var(--seed-color, var(--rose-deep));
+    border-radius: 60% 60% 0 0;
+  }
+  .heartlet::before{ left:50%;  transform: rotate(-45deg); transform-origin: 0 100%; }
+  .heartlet::after{  left:-50%; transform: rotate(45deg);  transform-origin: 100% 100%; }
+
+  .card{
+    position:relative;
+    width:100%;
+    max-width: 640px;
+    min-height: 400px;
+    background: linear-gradient(175deg, var(--cream) 0%, var(--cream-2) 100%);
+    border-radius: 26px;
+    padding: 30px 30px 26px;
+    box-shadow: 0 30px 70px rgba(0,0,0,.45), 0 0 0 1px rgba(217,178,106,.25);
+    overflow:hidden;
+  }
+
+  /* ---- intro stage: the single tap-to-open heart ---- */
+  .intro-stage{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap: 18px;
+    transition: opacity .45s ease, transform .45s ease;
+  }
+  .intro-stage.hide{
+    opacity:0;
+    transform: scale(.92);
+    pointer-events:none;
+  }
+
+  .intro-heart{
+    position:relative;
+    width: 120px;
+    height: 120px;
+    background:none;
+    border:none;
+    padding:0;
+    cursor:pointer;
+    filter: drop-shadow(0 10px 22px rgba(199,58,94,.4));
+    touch-action: manipulation;
+  }
+  .intro-heart .pulse-wrap{
+    position:absolute;
+    inset:0;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  .intro-heart .shape{
+    width: 92px;
+    height: 92px;
+    left: 14px;
+    top: 14px;
+  }
+  @keyframes pulse{
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.06); }
+  }
+
+  .intro-hint{
+    font-family:'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: #8a5064;
+    margin:0;
+  }
+
+  /* ---- content stage: message + countdown + tree ---- */
+  .content-stage{
+    position:relative;
+    z-index:2;
+    display:flex;
+    gap: 14px;
+    height:100%;
+    opacity:0;
+    transform: scale(.95);
+    transition: opacity .6s ease, transform .6s ease;
+    pointer-events: none;
+  }
+  .content-stage.show{
+    opacity:1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  .text-col{
+    position:relative;
+    z-index:2;
+    flex: 1 1 50%;
+    display:flex;
+    flex-direction:column;
+    min-width: 0;
+  }
+
+  .message{
+    min-height: 190px;
+    font-family:'Cormorant Garamond', serif;
+    font-size: 1.16rem;
+    line-height:1.5;
+    color: var(--ink);
+    text-align:left;
+    margin: 2px 0 0;
+    white-space: pre-wrap;
+  }
+
+  .message .cursor{
+    display:inline-block;
+    width: 2px;
+    background: var(--rose-deep);
+    margin-left: 2px;
+    animation: blink 1s step-start infinite;
+    height: 1.05em;
+    vertical-align: text-bottom;
+  }
+
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .countdown-block{
+    margin-top: auto;
+    padding-top: 14px;
+  }
+
+  .divider{
+    border:none;
+    height:1px;
+    background: linear-gradient(90deg, rgba(74,33,48,.35), rgba(74,33,48,.1));
+    margin: 0 0 10px;
+  }
+
+  .countdown-label{
+    font-family:'Jost', sans-serif;
+    font-size:.78rem;
+    color:#8a5064;
+    margin: 0 0 4px;
+  }
+
+  .countdown-line{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size: 1.28rem;
+    color: var(--rose-deep);
+    margin: 0;
+  }
+
+  .together{
+    margin-top: 8px;
+    font-size: .74rem;
+    color:#8a5064;
+  }
+  .together b{ color: var(--rose-deep); font-weight:600; }
+
+  .tree-col{
+    position:relative;
+    flex: 1 1 50%;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    min-width: 0;
+  }
+
+  .heartTree{
+    position:relative;
+    width: 100%;
+    max-width: 300px;
+    aspect-ratio: 1 / 0.98;
+  }
+
+  .tree-grow{
+    position:absolute;
+    inset:0;
+    transform-origin: 50% 100%;
+  }
+
+  .ground-shadow{
+    position:absolute;
+    bottom: 2%;
+    left:50%;
+    width: 40%;
+    height: 6%;
+    background: radial-gradient(ellipse at center, rgba(58,20,32,.28), transparent 72%);
+    transform: translateX(-50%);
+  }
+
+  .trunk{
+    position:absolute;
+    bottom: 4%;
+    left:50%;
+    width: 7%;
+    height: 22%;
+    background: linear-gradient(90deg, #6b4028 0%, #9a6640 35%, #6b4028 60%, #47280f 100%);
+    clip-path: polygon(32% 0%, 68% 0%, 86% 100%, 14% 100%);
+    transform-origin: 50% 100%;
+    transform: translateX(-50%) scaleY(0);
+    opacity:0;
+  }
+  .trunk.grow{
+    animation: trunk-grow .8s cubic-bezier(.25,.8,.3,1) forwards;
+  }
+  @keyframes trunk-grow{
+    0%   { transform: translateX(-50%) scaleY(0); opacity:0; }
+    100% { transform: translateX(-50%) scaleY(1); opacity:1; }
+  }
+
+  /* little branches that split off the trunk before the heart-leaves bloom */
+  .branch{
+    position:absolute;
+    left:50%;
+    bottom: 23%;
+    width: 3.2%;
+    height: var(--bh, 34%);
+    background: linear-gradient(90deg, #6b4028 0%, #9a6640 40%, #6b4028 70%, #47280f 100%);
+    clip-path: polygon(15% 100%, 85% 100%, 62% 0%, 38% 0%);
+    transform-origin: 50% 100%;
+    transform: translateX(-50%) rotate(var(--ang, 0deg)) scaleY(0);
+    opacity:0;
+  }
+  .branch.grow{
+    animation: branch-grow 1.2s cubic-bezier(.22,.75,.28,1) forwards;
+    animation-delay: var(--bdelay, 0s);
+  }
+  @keyframes branch-grow{
+    0%   { transform: translateX(-50%) rotate(var(--ang, 0deg)) scaleY(0); opacity:0; }
+    100% { transform: translateX(-50%) rotate(var(--ang, 0deg)) scaleY(1); opacity:1; }
+  }
+
+  .canopy{
+    position:absolute;
+    top:0; left:0;
+    width:100%;
+    height: 82%;
+    transform-origin: 50% 100%;
+    animation: canopy-sway 7s ease-in-out infinite;
+    animation-delay: 1.6s;
+  }
+
+  @keyframes canopy-sway{
+    0%, 100% { transform: rotate(0deg); }
+    50%      { transform: rotate(1deg); }
+  }
+
+  .heartTree i{
+    width: 5.2%;
+    height: 5.2%;
+    font-style:normal;
+    opacity:0;
+    transform: scale(0) rotate(var(--r, 0deg));
+    animation: bloom .6s cubic-bezier(.2,1.4,.4,1) forwards;
+    animation-delay: var(--d, 0s);
+  }
+
+  @keyframes bloom{
+    0%   { opacity:0; transform: scale(0) rotate(var(--r,0deg)); }
+    70%  { opacity:1; }
+    100% { opacity:1; transform: scale(var(--s,1)) rotate(var(--r,0deg)); }
+  }
+
+  .petal{
+    top: -6%;
+    width: 3.6%;
+    height: 3.6%;
+    opacity:0;
+    animation: fall linear infinite;
+  }
+
+  @keyframes fall{
+    0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity:0; }
+    10%  { opacity:.85; }
+    90%  { opacity:.5; }
+    100% { transform: translateY(115%) translateX(var(--fx,10px)) rotate(160deg); opacity:0; }
+  }
+
+  .corner-heart{
+    right: 22px;
+    bottom: 20px;
+    width: 14px;
+    height: 14px;
+    z-index:3;
+    opacity:0;
+    transition: opacity .5s ease .4s;
+  }
+  .corner-heart.show{ opacity:1; }
+
+  footer{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    font-size:.72rem;
+    letter-spacing:.05em;
+    color: rgba(242,230,216,.45);
+  }
+
+  @media (max-width: 560px){
+    .card{ min-height: 0; }
+    .content-stage{ flex-direction: column; }
+    .text-col{ order:2; }
+    .tree-col{ order:1; justify-content:center; }
+    .heartTree{ max-width: 270px; margin: 0 auto 10px; }
+    .message{ min-height: 0; }
+    .countdown-block{ margin-top: 18px; padding-top: 14px; }
+    .intro-stage{ position:relative; min-height: 260px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .drift, .canopy, .heartTree i, .petal, .message .cursor, .intro-heart .pulse-wrap, .trunk, .branch{ animation: none !important; }
+    .heartTree i{ opacity:1; transform: scale(var(--s,1)) rotate(var(--r,0deg)); }
+    .petal{ display:none; }
+    .trunk{ opacity:1; transform: translateX(-50%) scaleY(1); }
+    .branch{ opacity:1; transform: translateX(-50%) rotate(var(--ang,0deg)) scaleY(1); }
+  }
+</style>
+</head>
+<body>
+
+<div id="sky"></div>
+
+<main>
+  <p class="brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 20s-7.5-4.6-10-9.3C.4 7 2 3.5 5.6 3c2.2-.3 4.3.9 5.7 2.8C12.7 3.9 14.8 2.7 17 3c3.6.5 5.2 4 3.6 7.7C18 15.4 12 20 12 20z"/></svg>
+    for Dola
+  </p>
+
+  <div class="card">
+
+    <div class="intro-stage" id="introStage">
+      <button class="intro-heart" id="introHeart" aria-label="Tap to open">
+        <span class="pulse-wrap">
+          <span class="heartlet shape"></span>
+        </span>
+      </button>
+      <p class="intro-hint">tap the heart</p>
+    </div>
+
+    <div class="content-stage" id="contentStage">
+      <div class="text-col">
+        <p class="message" id="message"></p>
+        <div class="countdown-block">
+          <hr class="divider">
+          <p class="countdown-label">Counting down to your birthday…</p>
+          <p class="countdown-line" id="countdownLine">00 days 00 hrs 00 min 00 sec</p>
+          <p class="together">Together for <b id="togetherDays">0</b> days since <b>May 1, 2022</b></p>
+        </div>
+      </div>
+
+      <div class="tree-col">
+        <div class="heartTree" id="heartTree">
+          <div class="tree-grow" id="treeGrow">
+            <div class="ground-shadow"></div>
+            <div class="trunk" id="trunk"></div>
+            <div class="branch" style="--ang:-14deg; --bh:42%; --bdelay:.15s"></div>
+            <div class="branch" style="--ang:14deg;  --bh:42%; --bdelay:.15s"></div>
+            <div class="branch" style="--ang:-28deg; --bh:38%; --bdelay:1.35s"></div>
+            <div class="branch" style="--ang:28deg;  --bh:38%; --bdelay:1.35s"></div>
+            <div class="branch" style="--ang:-42deg; --bh:32%; --bdelay:2.55s"></div>
+            <div class="branch" style="--ang:42deg;  --bh:32%; --bdelay:2.55s"></div>
+            <div class="branch" style="--ang:-54deg; --bh:26%; --bdelay:3.75s"></div>
+            <div class="branch" style="--ang:54deg;  --bh:26%; --bdelay:3.75s"></div>
+            <div class="canopy" id="canopy"></div>
+          </div>
+          <div class="petals" id="petals"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="heartlet corner-heart" id="cornerHeart"></div>
+  </div>
+</main>
+
+<footer>made with love, just for you</footer>
+
+<script>
+  const colors = ['#e0577a','#e0577a','#c73a5e','#c73a5e','#a8283f','#f2a3b6','#f2a3b6','#f6c6d2','#d9b26a'];
+
+  // ---- floating hearts background (runs immediately) ----
+  const sky = document.getElementById('sky');
+  const HEART_COUNT = 24;
+  for (let i = 0; i < HEART_COUNT; i++) {
+    const el = document.createElement('div');
+    el.className = 'drift';
+    el.textContent = '♡';
+    const size = 14 + Math.random() * 22;
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.fontSize = size + 'px';
+    el.style.setProperty('--drift-x', (Math.random() * 120 - 60) + 'px');
+    const dur = 9 + Math.random() * 10;
+    el.style.animationDuration = dur + 's';
+    el.style.animationDelay = (-Math.random() * dur) + 's';
+    sky.appendChild(el);
+  }
+
+  // ---- build the heart-shaped canopy from many little hearts (parametric heart curve) ----
+  function buildCanopy(){
+    const canopy = document.getElementById('canopy');
+    const N = 210;
+    const seeds = [];
+    for (let i = 0; i < N; i++) {
+      const t = Math.random() * Math.PI * 2;
+      const r = Math.pow(Math.random(), 0.62);
+      const x16 = 16 * Math.pow(Math.sin(t), 3);
+      const y16 = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+      const fx = x16 * r;
+      const fy = -y16 * r;
+      seeds.push({ left: 50 + fx * 2.55, top: 46 + fy * 2.55, r });
+    }
+    seeds.sort((a, b) => a.r - b.r);
+    seeds.forEach((seed, i) => {
+      const el = document.createElement('i');
+      el.className = 'heartlet';
+      el.style.left = seed.left + '%';
+      el.style.top = seed.top + '%';
+      el.style.setProperty('--seed-color', colors[Math.floor(Math.random()*colors.length)]);
+      el.style.setProperty('--s', (0.85 + Math.random()*0.55).toFixed(2));
+      el.style.setProperty('--r', (Math.random()*24 - 12) + 'deg');
+      el.style.setProperty('--d', (0.05 + i * 0.0155 + seed.r * 0.15) + 's');
+      canopy.appendChild(el);
+    });
+  }
+
+  // ---- falling petals near the tree ----
+  function spawnPetals(){
+    const petals = document.getElementById('petals');
+    const PETAL_COUNT = 7;
+    for (let i = 0; i < PETAL_COUNT; i++) {
+      const p = document.createElement('div');
+      p.className = 'heartlet petal';
+      p.style.left = (15 + Math.random() * 70) + '%';
+      p.style.setProperty('--seed-color', colors[Math.floor(Math.random()*colors.length)]);
+      p.style.setProperty('--fx', (Math.random() * 30 - 15) + 'px');
+      const dur = 5 + Math.random() * 4;
+      p.style.animationDuration = dur + 's';
+      p.style.animationDelay = (2.5 + Math.random() * 6) + 's';
+      petals.appendChild(p);
+    }
+  }
+
+  // ---- message text, and little hearts that fly from the tree and become each letter ----
+  const lines = [
+    "My dearest Dola,\n\n",
+    "your birthday is almost here, and I can't stop smiling just thinking about it. ",
+    "Since May 1, 2022, every single day with you has felt like a gift I didn't know I needed. ",
+    "You are my favorite person, my safe place, and my best story so far. ",
+    "Happy almost birthday, my love. I can't wait to hold you and tell you in person how much you mean to me. 🤍"
+  ].join("");
+
+  // fly one little heart from the tree to a target element, then reveal it (heart "becomes" the letter)
+  function flyLetterHeart(targetEl){
+    const treeRect = document.getElementById('heartTree').getBoundingClientRect();
+    const r = targetEl.getBoundingClientRect();
+
+    const h = document.createElement('div');
+    h.className = 'heartlet';
+    const size = 8 + Math.random() * 4;
+    h.style.position = 'fixed';
+    h.style.width = size + 'px';
+    h.style.height = size + 'px';
+    const startX = treeRect.left + treeRect.width * (0.3 + Math.random() * 0.4);
+    const startY = treeRect.top + treeRect.height * (0.2 + Math.random() * 0.35);
+    h.style.left = startX + 'px';
+    h.style.top = startY + 'px';
+    h.style.setProperty('--seed-color', colors[Math.floor(Math.random()*colors.length)]);
+    h.style.opacity = '0';
+    h.style.zIndex = 50;
+    h.style.transition = 'left .6s ease-in-out, top .6s ease-in-out, opacity .6s ease, transform .6s ease-in-out';
+    document.body.appendChild(h);
+
+    const endX = r.left + r.width/2 - size/2;
+    const endY = r.top + r.height/2 - size/2;
+
+    requestAnimationFrame(() => {
+      h.style.opacity = '.95';
+      requestAnimationFrame(() => {
+        h.style.left = endX + 'px';
+        h.style.top = endY + 'px';
+        h.style.transform = 'scale(.35) rotate(' + (Math.random()*40 - 20) + 'deg)';
+        h.style.opacity = '0';
+      });
+    });
+
+    setTimeout(() => {
+      targetEl.style.opacity = '1';
+      h.remove();
+    }, 600);
+  }
+
+  function startTypewriter(){
+    const msgEl = document.getElementById('message');
+    msgEl.innerHTML = '';
+    const cursor = document.createElement('span');
+    cursor.className = 'cursor';
+    msgEl.appendChild(cursor);
+
+    const chars = Array.from(lines); // Array.from keeps emoji as one whole character
+    let i = 0;
+
+    function typeNext(){
+      if (i < chars.length) {
+        const ch = chars[i];
+        const span = document.createElement('span');
+        span.textContent = ch;
+        span.style.opacity = '0';
+        span.style.transition = 'opacity .3s ease';
+        msgEl.insertBefore(span, cursor);
+
+        if (ch.trim() === '') {
+          span.style.opacity = '1'; // spaces/line breaks: no heart needed, just show
+        } else {
+          flyLetterHeart(span);
+        }
+
+        i++;
+        setTimeout(typeNext, 28);
+      }
+    }
+    typeNext();
+  }
+
+  // ---- countdown to next birthday (Oct 4) ----
+  function nextBirthday(){
+    const now = new Date();
+    let year = now.getFullYear();
+    let target = new Date(year, 9, 4, 0, 0, 0);
+    if (target.getTime() <= now.getTime()) {
+      target = new Date(year + 1, 9, 4, 0, 0, 0);
+    }
+    return target;
+  }
+  function pad(n){ return String(n).padStart(2, '0'); }
+  function startCountdown(){
+    function tick(){
+      const diff = Math.max(0, nextBirthday() - new Date());
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      document.getElementById('countdownLine').textContent =
+        `${pad(d)} days ${pad(h)} hrs ${pad(m)} min ${pad(s)} sec`;
+    }
+    tick();
+    setInterval(tick, 1000);
+  }
+
+  // ---- together-since counter ----
+  function startTogether(){
+    function tick(){
+      const start = new Date(2022, 4, 1, 0, 0, 0);
+      const days = Math.floor((new Date() - start) / 86400000);
+      document.getElementById('togetherDays').textContent = days.toLocaleString();
+    }
+    tick();
+    setInterval(tick, 60000);
+  }
+
+  // ---- heart bursting into little pieces ----
+  function burst(x, y){
+    const FRAGS = 22;
+    for (let k = 0; k < FRAGS; k++) {
+      const f = document.createElement('div');
+      f.className = 'heartlet';
+      const size = 8 + Math.random() * 11;
+      f.style.position = 'fixed';
+      f.style.left = x + 'px';
+      f.style.top = y + 'px';
+      f.style.width = size + 'px';
+      f.style.height = size + 'px';
+      f.style.setProperty('--seed-color', colors[Math.floor(Math.random()*colors.length)]);
+      f.style.zIndex = 60;
+      f.style.opacity = '1';
+      f.style.transition = 'transform 700ms cubic-bezier(.2,.8,.3,1), opacity 700ms ease';
+      document.body.appendChild(f);
+      const ang = Math.random() * Math.PI * 2;
+      const dist = 70 + Math.random() * 110;
+      const dx = Math.cos(ang) * dist, dy = Math.sin(ang) * dist;
+      requestAnimationFrame(() => {
+        f.style.transform = `translate(${dx}px, ${dy}px) rotate(${(Math.random()*180-90)}deg) scale(.25)`;
+        f.style.opacity = '0';
+      });
+      setTimeout(() => f.remove(), 750);
+    }
+  }
+
+  // ---- the open sequence ----
+  const introHeart = document.getElementById('introHeart');
+  const introStage = document.getElementById('introStage');
+  const contentStage = document.getElementById('contentStage');
+  const treeGrow = document.getElementById('treeGrow');
+  const cornerHeart = document.getElementById('cornerHeart');
+
+  introHeart.addEventListener('click', () => {
+    const rect = introHeart.getBoundingClientRect();
+    burst(rect.left + rect.width/2, rect.top + rect.height/2);
+
+    introStage.classList.add('hide');
+    contentStage.classList.add('show');
+    cornerHeart.classList.add('show');
+
+    // 1) the trunk splits into many branches first (~5s to fully fan out)
+    document.getElementById('trunk').classList.add('grow');
+    document.querySelectorAll('.branch').forEach(b => b.classList.add('grow'));
+
+    // 2) once the branches are out, the heart-leaves bloom on them (~4s to fully bloom)
+    setTimeout(() => {
+      buildCanopy();
+      spawnPetals();
+    }, 5000);
+
+    startCountdown();
+    startTogether();
+
+    // 3) once the tree is fully bloomed, its little hearts drift off one by one to become the message
+    setTimeout(startTypewriter, 9300);
+  }, { once: true });
+</script>
+
+</body>
+</html>
