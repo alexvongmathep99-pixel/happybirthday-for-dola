@@ -253,7 +253,13 @@
     position:relative;
     width: 100%;
     max-width: 300px;
-    aspect-ratio: 300 / 320;
+  }
+  /* intrinsic-ratio box (works in every browser, unlike CSS aspect-ratio which
+     some in-app WebViews such as WhatsApp's don't support) */
+  .heartTree::before{
+    content:"";
+    display:block;
+    padding-top: 106.667%; /* 320 / 300 */
   }
 
   .tree-grow{
@@ -410,7 +416,7 @@
         <div class="heartTree" id="heartTree">
           <div class="tree-grow" id="treeGrow">
             <div class="ground-shadow"></div>
-            <svg class="tree-svg" id="treeSvg" viewBox="0 0 300 320" preserveAspectRatio="xMidYMax meet">
+            <svg class="tree-svg" id="treeSvg" viewBox="0 0 300 320" preserveAspectRatio="none">
               <defs>
                 <linearGradient id="woodGrad" x1="0" y1="0" x2="1" y2="1">
                   <stop offset="0%" stop-color="#3d2313"/>
