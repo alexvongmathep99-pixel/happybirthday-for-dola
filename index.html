@@ -536,10 +536,11 @@
   function flyLetterHeart(targetEl){
     const treeRect = document.getElementById('heartTree').getBoundingClientRect();
     const r = targetEl.getBoundingClientRect();
+    const FLIGHT = 600; // total ms the heart takes to fly from the tree to the letter
 
     const h = document.createElement('div');
     h.className = 'heartlet';
-    const size = 8 + Math.random() * 4;
+    const size = 12 + Math.random() * 6;
     h.style.position = 'fixed';
     h.style.width = size + 'px';
     h.style.height = size + 'px';
@@ -549,27 +550,37 @@
     h.style.top = startY + 'px';
     h.style.setProperty('--seed-color', colors[Math.floor(Math.random()*colors.length)]);
     h.style.opacity = '0';
-    h.style.zIndex = 50;
-    h.style.transition = 'left .6s ease-in-out, top .6s ease-in-out, opacity .6s ease, transform .6s ease-in-out';
+    h.style.zIndex = 999;
+    h.style.pointerEvents = 'none';
+    h.style.filter = 'drop-shadow(0 0 5px rgba(255,255,255,.55))';
+    h.style.transition = 'opacity .18s ease';
     document.body.appendChild(h);
 
     const endX = r.left + r.width/2 - size/2;
     const endY = r.top + r.height/2 - size/2;
 
+    // 1) fade the heart fully in first
     requestAnimationFrame(() => {
-      h.style.opacity = '.95';
+      h.style.opacity = '1';
       requestAnimationFrame(() => {
+        // 2) fly across the screen while staying fully visible
+        h.style.transition = `left ${FLIGHT}ms ease-in-out, top ${FLIGHT}ms ease-in-out, transform ${FLIGHT}ms ease-in-out`;
         h.style.left = endX + 'px';
         h.style.top = endY + 'px';
-        h.style.transform = 'scale(.35) rotate(' + (Math.random()*40 - 20) + 'deg)';
-        h.style.opacity = '0';
+        h.style.transform = 'scale(.5) rotate(' + (Math.random()*40 - 20) + 'deg)';
+
+        // 3) only fade out right as it arrives, so it "becomes" the letter
+        setTimeout(() => {
+          h.style.transition += ', opacity 160ms ease-in';
+          h.style.opacity = '0';
+        }, FLIGHT - 160);
       });
     });
 
     setTimeout(() => {
       targetEl.style.opacity = '1';
       h.remove();
-    }, 600);
+    }, FLIGHT);
   }
 
   function startTypewriter(){
