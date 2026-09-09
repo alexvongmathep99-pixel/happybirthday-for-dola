@@ -305,8 +305,8 @@
   }
 
   .heartTree i{
-    width: 9%;
-    height: 9%;
+    width: 4.6%;
+    height: 4.6%;
     font-style:normal;
     opacity:0;
     transform: scale(0) rotate(var(--r, 0deg));
@@ -426,18 +426,27 @@
               <path class="tree-path" style="--delay:0s; --dur:.55s" stroke="url(#woodGrad)" stroke-width="6" d="M150,300 C162,310 178,316 200,318"/>
               <path class="tree-path" style="--delay:0s; --dur:.55s" stroke="url(#woodGrad)" stroke-width="7" d="M150,300 C170,308 190,312 222,308"/>
 
-              <!-- trunk: taller and straighter, like the reference photo -->
+              <!-- trunk -->
               <path class="tree-path" style="--delay:.3s; --dur:1s" stroke="url(#woodGrad)" stroke-width="12" d="M150,300 C145,270 155,240 148,200 C144,175 152,155 148,140"/>
 
-              <!-- two main branches forking left and right -->
-              <path class="tree-path" style="--delay:1.2s; --dur:1s" stroke="url(#woodGrad)" stroke-width="6.5" d="M148,140 C120,125 95,112 75,90"/>
-              <path class="tree-path" style="--delay:1.2s; --dur:1s" stroke="url(#woodGrad)" stroke-width="6.5" d="M148,140 C176,128 202,115 230,100"/>
+              <!-- three main branches, so the crown fills out fully -->
+              <path class="tree-path" style="--delay:1.2s; --dur:1s" stroke="url(#woodGrad)" stroke-width="6" d="M148,140 C120,125 95,112 70,95"/>
+              <path class="tree-path" style="--delay:1.2s; --dur:1s" stroke="url(#woodGrad)" stroke-width="6" d="M148,140 C150,120 150,105 150,80"/>
+              <path class="tree-path" style="--delay:1.2s; --dur:1s" stroke="url(#woodGrad)" stroke-width="6" d="M148,140 C176,128 202,113 228,98"/>
 
-              <!-- each main branch splits once more, sparsely (not a full symmetric fan) -->
-              <path class="tree-path" style="--delay:2.1s; --dur:1s" stroke="url(#woodGrad)" stroke-width="3.6" d="M75,90 C58,72 48,60 40,40"/>
-              <path class="tree-path" style="--delay:2.1s; --dur:1s" stroke="url(#woodGrad)" stroke-width="3.6" d="M75,90 C88,72 102,58 115,42"/>
-              <path class="tree-path" style="--delay:2.1s; --dur:1s" stroke="url(#woodGrad)" stroke-width="3.6" d="M230,100 C248,85 260,70 268,48"/>
-              <path class="tree-path" style="--delay:2.1s; --dur:1s" stroke="url(#woodGrad)" stroke-width="3.6" d="M230,100 C214,82 200,66 188,44"/>
+              <!-- each main branch forks again -->
+              <path class="tree-path" style="--delay:2.2s; --dur:1s" stroke="url(#woodGrad)" stroke-width="3.4" d="M70,95 C50,80 38,65 28,45"/>
+              <path class="tree-path" style="--delay:2.2s; --dur:1s" stroke="url(#woodGrad)" stroke-width="3.4" d="M70,95 C62,75 75,60 85,42"/>
+              <path class="tree-path" style="--delay:2.2s; --dur:1s" stroke="url(#woodGrad)" stroke-width="3.4" d="M150,80 C132,62 118,48 100,30"/>
+              <path class="tree-path" style="--delay:2.2s; --dur:1s" stroke="url(#woodGrad)" stroke-width="3.4" d="M150,80 C168,62 182,48 200,30"/>
+              <path class="tree-path" style="--delay:2.2s; --dur:1s" stroke="url(#woodGrad)" stroke-width="3.4" d="M228,98 C248,82 260,66 270,46"/>
+              <path class="tree-path" style="--delay:2.2s; --dur:1s" stroke="url(#woodGrad)" stroke-width="3.4" d="M228,98 C214,80 200,65 190,45"/>
+
+              <!-- fine twigs for a fuller, more delicate crown -->
+              <path class="tree-path" style="--delay:3s; --dur:.6s" stroke="url(#woodGrad)" stroke-width="1.8" d="M28,45 C18,34 12,26 8,14"/>
+              <path class="tree-path" style="--delay:3s; --dur:.6s" stroke="url(#woodGrad)" stroke-width="1.8" d="M100,30 C88,18 96,10 108,12"/>
+              <path class="tree-path" style="--delay:3s; --dur:.6s" stroke="url(#woodGrad)" stroke-width="1.8" d="M200,30 C212,18 204,10 192,12"/>
+              <path class="tree-path" style="--delay:3s; --dur:.6s" stroke="url(#woodGrad)" stroke-width="1.8" d="M270,46 C280,34 286,26 292,14"/>
             </svg>
             <div class="canopy" id="canopy"></div>
           </div>
@@ -491,7 +500,7 @@
   // ---- build the heart-shaped canopy from many little hearts (parametric heart curve) ----
   function buildCanopy(){
     const canopy = document.getElementById('canopy');
-    const N = 100;
+    const N = 260;
     const seeds = [];
     for (let i = 0; i < N; i++) {
       const t = Math.random() * Math.PI * 2;
@@ -509,7 +518,7 @@
       el.style.left = seed.left + '%';
       el.style.top = seed.top + '%';
       el.style.setProperty('--seed-color', colors[Math.floor(Math.random()*colors.length)]);
-      el.style.setProperty('--s', (0.9 + Math.random()*1.0).toFixed(2));
+      el.style.setProperty('--s', (0.8 + Math.random()*0.5).toFixed(2));
       el.style.setProperty('--r', (Math.random()*24 - 12) + 'deg');
       el.style.setProperty('--d', (0.05 + i * 0.0155 + seed.r * 0.15) + 's');
       canopy.appendChild(el);
