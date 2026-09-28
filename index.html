@@ -8,7 +8,7 @@
 <meta property="og:title" content="For Dola 🤍">
 <meta property="og:description" content="A little something, just for you.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500;600&family=Noto+Serif+Lao:wght@400;600&family=Noto+Sans+Lao:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --wine: #3a0d20;
@@ -28,7 +28,7 @@
     padding:0;
     min-height:100%;
     background: radial-gradient(130% 110% at 50% 0%, #6e1836 0%, #4a1128 42%, #24081a 100%);
-    font-family: 'Jost','Noto Sans Lao', sans-serif;
+    font-family: 'Jost', sans-serif;
     color: var(--cream);
     overflow-x:hidden;
   }
@@ -75,7 +75,7 @@
     display:flex;
     align-items:center;
     gap: 8px;
-    font-family:'Cormorant Garamond','Noto Serif Lao', serif;
+    font-family:'Cormorant Garamond', serif;
     font-style: italic;
     font-size: 1.05rem;
     color: var(--rose-soft);
@@ -154,7 +154,7 @@
   }
 
   .intro-hint{
-    font-family:'Cormorant Garamond','Noto Serif Lao', serif;
+    font-family:'Cormorant Garamond', serif;
     font-style: italic;
     font-size: 1rem;
     color: #8a5064;
@@ -192,7 +192,7 @@
 
   .message{
     min-height: 190px;
-    font-family:'Cormorant Garamond','Noto Serif Lao', serif;
+    font-family:'Cormorant Garamond', serif;
     font-size: 1.16rem;
     line-height:1.5;
     color: var(--ink);
@@ -227,14 +227,14 @@
   }
 
   .countdown-label{
-    font-family:'Jost','Noto Sans Lao', sans-serif;
+    font-family:'Jost', sans-serif;
     font-size:.78rem;
     color:#8a5064;
     margin: 0 0 4px;
   }
 
   .countdown-line{
-    font-family:'Cormorant Garamond','Noto Serif Lao', serif;
+    font-family:'Cormorant Garamond', serif;
     font-weight:600;
     font-size: 1.28rem;
     color: var(--rose-deep);
@@ -391,9 +391,9 @@
   .extras{ display:none; margin-top:22px; padding-top:18px; border-top:1px solid rgba(74,33,48,.15); position:relative; z-index:2; }
   .extras.on{ display:block; animation: fadeUp .8s ease both; padding-bottom:26px; }
   @keyframes fadeUp{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;} }
-  .extras h3{ font-family:'Cormorant Garamond','Noto Serif Lao',serif; font-style:italic; font-weight:500; font-size:1.05rem; color:#8a5064; margin:0 0 8px; }
+  .extras h3{ font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500; font-size:1.05rem; color:#8a5064; margin:0 0 8px; }
   .reason{ background:rgba(255,255,255,.55); border-radius:16px; padding:16px 18px; min-height:78px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
-  .reason p{ margin:0; font-family:'Cormorant Garamond','Noto Serif Lao',serif; font-size:1.18rem; line-height:1.45; color:var(--ink); }
+  .reason p{ margin:0; font-family:'Cormorant Garamond',serif; font-size:1.18rem; line-height:1.45; color:var(--ink); }
   .reason .nextbtn{ flex:0 0 auto; background:none; border:1px solid var(--rose-deep); color:var(--rose-deep); border-radius:999px; padding:6px 12px; font:inherit; font-size:.78rem; cursor:pointer; touch-action:manipulation; }
   .reason-count{ font-size:.72rem; color:#8a5064; margin:6px 2px 0; }
   .gallery-wrap{ margin-top:20px; }
@@ -406,7 +406,7 @@
   /* ---- final full-screen love note ---- */
   .overlay{ position:fixed; inset:0; z-index:50; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:14px; padding:8vw; background:rgba(36,8,26,.94); opacity:0; pointer-events:none; transition:opacity .6s ease; }
   .overlay.on{ opacity:1; pointer-events:auto; }
-  .overlay .big{ font-family:'Cormorant Garamond','Noto Serif Lao',serif; font-size:clamp(2rem,9vw,3.4rem); font-weight:600; color:var(--rose-soft); margin:0; line-height:1.25; }
+  .overlay .big{ font-family:'Cormorant Garamond',serif; font-size:clamp(2rem,9vw,3.4rem); font-weight:600; color:var(--rose-soft); margin:0; line-height:1.25; }
   .overlay .small{ font-size:1rem; color:var(--cream); margin:0; }
   .overlay .close{ font-size:.75rem; color:rgba(242,230,216,.5); margin-top:26px; }
 
@@ -431,8 +431,6 @@
   </p>
 
   <div class="tools" id="tools">
-    <button class="tbtn" id="langLo" type="button">ລາວ</button>
-    <button class="tbtn" id="langEn" type="button">EN</button>
     <button class="tbtn" id="skipBtn" type="button"></button>
     <button class="tbtn" id="musicBtn" type="button" hidden>♪</button>
   </div>
@@ -445,7 +443,7 @@
           <span class="heartlet shape"></span>
         </span>
       </button>
-      <p class="intro-hint" id="introHint">ແຕະຫົວໃຈ</p>
+      <p class="intro-hint" id="introHint">tap the heart</p>
     </div>
 
     <div class="content-stage" id="contentStage">
@@ -619,37 +617,19 @@
   // =====================================================================
   //  ✏️  EDIT HERE — your words, photos and music
   // =====================================================================
-  const MSG = {
-    lo: {
-      before: "ໂດລາທີ່ຮັກ,\n\nວັນເກີດຂອງເຈົ້າໃກ້ຈະມາເຖິງແລ້ວ ແລະ ຂ້ອຍກໍຍິ້ມບໍ່ຢຸດເລີຍເມື່ອຄິດເຖິງມັນ. ຕັ້ງແຕ່ວັນທີ 1 ພຶດສະພາ 2022 ທຸກໆມື້ທີ່ໄດ້ຢູ່ກັບເຈົ້າຄືຂອງຂວັນທີ່ຂ້ອຍບໍ່ເຄີຍຮູ້ມາກ່ອນວ່າຂ້ອຍຕ້ອງການ. ເຈົ້າຄືຄົນທີ່ຂ້ອຍຮັກທີ່ສຸດ, ເປັນບ່ອນປອດໄພຂອງຂ້ອຍ ແລະ ເປັນເລື່ອງລາວທີ່ດີທີ່ສຸດຂອງຂ້ອຍ. ສຸກສັນວັນເກີດລ່ວງໜ້າເດີ້ ຄົນດີຂອງຂ້ອຍ. ຂ້ອຍລໍຖ້າວັນທີ່ຈະໄດ້ກອດເຈົ້າ ແລະ ບອກເຈົ້າດ້ວຍຕົວເອງວ່າເຈົ້າສຳຄັນກັບຂ້ອຍຫຼາຍປານໃດ 🤍",
-      today:  "ສຸກສັນວັນເກີດ ທີ່ຮັກຂອງຂ້ອຍ! 🎂\n\nມື້ນີ້ເປັນມື້ຂອງເຈົ້າທັງມື້. ຂອບໃຈສຳລັບທຸກຮອຍຍິ້ມ ແລະ ທຸກຊ່ວງເວລາງຽບໆ ຕັ້ງແຕ່ວັນທີ 1 ພຶດສະພາ 2022. ຂ້ອຍຮັກເຈົ້າຫຼາຍກວ່າທີ່ຄຳເວົ້າຈະບອກໄດ້ 🤍"
-    },
-    en: {
-      before: "My dearest Dola,\n\nyour birthday is almost here, and I can't stop smiling just thinking about it. Since May 1, 2022, every single day with you has felt like a gift I didn't know I needed. You are my favorite person, my safe place, and my best story so far. Happy almost birthday, my love. I can't wait to hold you and tell you in person how much you mean to me. 🤍",
-      today:  "Happy Birthday, my love! 🎂\n\nToday is all yours. Thank you for every smile and every quiet moment since May 1, 2022. I love you more than words can say. 🤍"
-    }
-  };
+  const MESSAGE = "Happy Birthday! Having you by my side makes every journey feel easier and every day a little brighter. Thank you for being such a thoughtful, reliable, and genuine partner through all of life's ups and downs. I hope your special day is filled with everything that makes you feel happy and relaxed.";
 
   // "reasons I love you" — replace these with YOUR real, personal reasons
-  const REASONS = {
-    lo: [
-      "ເຈົ້າເຮັດໃຫ້ມື້ທຳມະດາກາຍເປັນມື້ພິເສດ",
-      "ຮອຍຍິ້ມຂອງເຈົ້າເຮັດໃຫ້ຂ້ອຍລືມຄວາມເມື່ອຍໄດ້ທັນທີ",
-      "ເຈົ້າຢູ່ຂ້າງຂ້ອຍ ໃນມື້ທີ່ຂ້ອຍບໍ່ເກັ່ງທີ່ສຸດ",
-      "ຢູ່ກັບເຈົ້າ ຂ້ອຍຮູ້ສຶກຄືຢູ່ບ້ານ",
-      "ເພາະເຈົ້າຄືເຈົ້າ ແລະ ຂ້ອຍຮັກທຸກຢ່າງທີ່ເປັນເຈົ້າ"
-    ],
-    en: [
-      "You turn ordinary days into special ones",
-      "Your smile makes me forget I'm tired",
-      "You stay beside me on my worst days",
-      "With you, I feel at home",
-      "Because you are you, and I love everything that is you"
-    ]
-  };
+  const REASONS = [
+    "You turn ordinary days into special ones",
+    "Your smile makes me forget I'm tired",
+    "You stay beside me on my worst days",
+    "With you, I feel at home",
+    "Because you are you, and I love everything that is you"
+  ];
 
   // photos: put image files next to index.html (or in a "photos" folder) and list them here
-  // example:  { src: "photos/1.jpg", caption: { lo: "ຄັ້ງທຳອິດທີ່ເຮົາພົບກັນ", en: "The day we met" } }
+  // example:  { src: "photos/1.jpg", caption: "The day we met" }
   const photos = [];
 
   // background music: put a file named music.mp3 next to index.html (button appears automatically)
@@ -657,17 +637,6 @@
 
   // interface text
   const I18N = {
-    lo: {
-      hint: "ແຕະຫົວໃຈ", label: "ນັບຖອຍຫຼັງສູ່ວັນເກີດຂອງເຈົ້າ…",
-      bdayLabel: "ມື້ນີ້ແມ່ນວັນເກີດຂອງເຈົ້າ 🎂", bdayLine: "ສຸກສັນວັນເກີດ, Dola!",
-      cd: (d,h,m,s) => `${d} ມື້ ${h} ຊົ່ວໂມງ ${m} ນາທີ ${s} ວິນາທີ`,
-      together: n => `ຢູ່ນຳກັນມາ <b>${n}</b> ມື້ ຕັ້ງແຕ່ <b>1 ພຶດສະພາ 2022</b>`,
-      footer: "ເຮັດດ້ວຍຄວາມຮັກ ເພື່ອເຈົ້າຄົນດຽວ",
-      skip: "ຂ້າມ ›", next: "ຕໍ່ໄປ ›",
-      reasons: "ເຫດຜົນທີ່ຂ້ອຍຮັກເຈົ້າ", photos: "ຄວາມຊົງຈຳຂອງເຮົາ",
-      love: "ແຕະເມື່ອເຈົ້າຮູ້ວ່າຂ້ອຍຮັກເຈົ້າ 🤍",
-      loveBig: "ຂ້ອຍຮັກເຈົ້າ, Dola", loveSmall: "ມື້ນີ້ ມື້ອື່ນ ແລະ ທຸກໆມື້", close: "ແຕະເພື່ອປິດ"
-    },
     en: {
       hint: "tap the heart", label: "Counting down to your birthday…",
       bdayLabel: "Today is your birthday 🎂", bdayLine: "Happy Birthday, Dola!",
@@ -683,16 +652,14 @@
 
   // =====================================================================
   const $ = id => document.getElementById(id);
-  let lang = 'lo';
-  try { lang = localStorage.getItem('dola-lang') || 'lo'; } catch(e){}
-  if (!I18N[lang]) lang = 'lo';
+  const lang = 'en';
 
   const timers = [];
   const later = (fn, ms) => { const id = setTimeout(fn, ms); timers.push(id); return id; };
   let typing = 0, messageStarted = false, extrasShown = false, canopyBuilt = false, reasonIdx = 0;
 
   function isBirthdayToday(){ const n = new Date(); return n.getMonth() === 9 && n.getDate() === 4; }
-  function currentMessage(){ return MSG[lang][isBirthdayToday() ? 'today' : 'before']; }
+  function currentMessage(){ return MESSAGE; }
 
   // fly one little heart from the tree to a target element, then reveal it (heart "becomes" the letter)
   function flyLetterHeart(targetEl){
@@ -745,21 +712,13 @@
     }, FLIGHT);
   }
 
-  // split into whole letters: keeps Lao tone marks / vowels and emoji together
+  // split into whole characters (keeps emoji together)
   function splitGraphemes(str){
-    let segs = Array.from(str);
     if (window.Intl && Intl.Segmenter) {
-      segs = Array.from(new Intl.Segmenter(undefined, {granularity:'grapheme'}).segment(str), x => x.segment);
+      return Array.from(new Intl.Segmenter(undefined, {granularity:'grapheme'}).segment(str), x => x.segment);
     }
-    const out = []; let carry = '';
-    segs.forEach(g => {
-      if ('ເແໂໃໄ'.includes(g)) carry += g;   // Lao leading vowels stay with the next letter
-      else { out.push(carry + g); carry = ''; }
-    });
-    if (carry) out.push(carry);
-    return out;
+    return Array.from(str);
   }
-
 
   function ensureCanopy(){
     if (canopyBuilt) return;
@@ -791,7 +750,7 @@
     let i = 0;
     function typeNext(){
       if (token !== typing) return;
-      if (i >= spans.length) { finishTyping(token); return; }
+      if (i >= spans.length) { cursor.remove(); finishTyping(token); return; }
       const span = spans[i];
       if (span.textContent.trim() === '') span.style.opacity = '1';
       else flyLetterHeart(span);
@@ -875,7 +834,7 @@
 
   // ---- reasons carousel, photos, love button ----
   function renderReasons(){
-    const list = REASONS[lang];
+    const list = REASONS;
     reasonIdx = reasonIdx % list.length;
     $('reasonText').textContent = list[reasonIdx];
     $('reasonCount').textContent = (reasonIdx + 1) + ' / ' + list.length;
@@ -890,7 +849,7 @@
       const img = document.createElement('img');
       img.src = ph.src; img.alt = ''; img.loading = 'lazy';
       fig.appendChild(img);
-      const cap = ph.caption && (ph.caption[lang] || ph.caption.lo || ph.caption.en);
+      const cap = ph.caption;
       if (cap) { const fc = document.createElement('figcaption'); fc.textContent = cap; fig.appendChild(fc); }
       g.appendChild(fig);
     });
@@ -917,22 +876,11 @@
     $('loveBig').textContent = t.loveBig;
     $('loveSmall').textContent = t.loveSmall;
     $('loveClose').textContent = t.close;
-    $('langLo').classList.toggle('active', lang === 'lo');
-    $('langEn').classList.toggle('active', lang === 'en');
-    document.documentElement.lang = lang === 'lo' ? 'lo' : 'en';
+    document.documentElement.lang = 'en';
     updateCountdown();
     updateTogether();
     if (extrasShown) { renderReasons(); renderGallery(); }
   }
-  function setLang(l){
-    if (l === lang) return;
-    lang = l;
-    try { localStorage.setItem('dola-lang', l); } catch(e){}
-    renderStatic();
-    if (messageStarted) showFull();
-  }
-  $('langLo').addEventListener('click', () => setLang('lo'));
-  $('langEn').addEventListener('click', () => setLang('en'));
   renderStatic();
 
   $('reasonNext').addEventListener('click', () => { reasonIdx++; renderReasons(); });
