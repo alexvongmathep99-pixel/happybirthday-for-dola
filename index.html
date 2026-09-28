@@ -4,8 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For Dola</title>
+<meta name="theme-color" content="#4a1128">
+<meta property="og:title" content="For Dola 🤍">
+<meta property="og:description" content="A little something, just for you.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500;600&family=Noto+Serif+Lao:wght@400;600&family=Noto+Sans+Lao:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
     --wine: #3a0d20;
@@ -25,7 +28,7 @@
     padding:0;
     min-height:100%;
     background: radial-gradient(130% 110% at 50% 0%, #6e1836 0%, #4a1128 42%, #24081a 100%);
-    font-family: 'Jost', sans-serif;
+    font-family: 'Jost','Noto Sans Lao', sans-serif;
     color: var(--cream);
     overflow-x:hidden;
   }
@@ -59,6 +62,7 @@
     position:relative;
     z-index:2;
     min-height:100vh;
+    min-height:100dvh;
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -71,7 +75,7 @@
     display:flex;
     align-items:center;
     gap: 8px;
-    font-family:'Cormorant Garamond', serif;
+    font-family:'Cormorant Garamond','Noto Serif Lao', serif;
     font-style: italic;
     font-size: 1.05rem;
     color: var(--rose-soft);
@@ -115,6 +119,7 @@
     gap: 18px;
     transition: opacity .45s ease, transform .45s ease;
   }
+  .intro-stage.gone{ display:none; }
   .intro-stage.hide{
     opacity:0;
     transform: scale(.92);
@@ -149,7 +154,7 @@
   }
 
   .intro-hint{
-    font-family:'Cormorant Garamond', serif;
+    font-family:'Cormorant Garamond','Noto Serif Lao', serif;
     font-style: italic;
     font-size: 1rem;
     color: #8a5064;
@@ -168,6 +173,8 @@
     transition: opacity .6s ease, transform .6s ease;
     pointer-events: none;
   }
+  .content-stage:not(.open){ display:none; }
+  .content-stage.open{ display:flex; }
   .content-stage.show{
     opacity:1;
     transform: scale(1);
@@ -185,13 +192,14 @@
 
   .message{
     min-height: 190px;
-    font-family:'Cormorant Garamond', serif;
+    font-family:'Cormorant Garamond','Noto Serif Lao', serif;
     font-size: 1.16rem;
     line-height:1.5;
     color: var(--ink);
     text-align:left;
     margin: 2px 0 0;
     white-space: pre-wrap;
+    overflow-wrap: break-word;
   }
 
   .message .cursor{
@@ -219,14 +227,14 @@
   }
 
   .countdown-label{
-    font-family:'Jost', sans-serif;
+    font-family:'Jost','Noto Sans Lao', sans-serif;
     font-size:.78rem;
     color:#8a5064;
     margin: 0 0 4px;
   }
 
   .countdown-line{
-    font-family:'Cormorant Garamond', serif;
+    font-family:'Cormorant Garamond','Noto Serif Lao', serif;
     font-weight:600;
     font-size: 1.28rem;
     color: var(--rose-deep);
@@ -369,7 +377,7 @@
     .heartTree{ max-width: 270px; margin: 0 auto 10px; }
     .message{ min-height: 0; }
     .countdown-block{ margin-top: 18px; padding-top: 14px; }
-    .intro-stage{ position:relative; min-height: 260px; }
+    .intro-stage{ position:relative; min-height: 300px; }
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -501,7 +509,6 @@
       p.style.strokeDashoffset = len;
     });
   }
-  prepareTreePaths();
 
   // ---- build the heart-shaped canopy from many little hearts (parametric heart curve) ----
   function buildCanopy(){
@@ -549,13 +556,16 @@
   }
 
   // ---- message text, and little hearts that fly from the tree and become each letter ----
-  const lines = [
+  const msgBefore = [
     "My dearest Dola,\n\n",
     "your birthday is almost here, and I can't stop smiling just thinking about it. ",
     "Since May 1, 2022, every single day with you has felt like a gift I didn't know I needed. ",
     "You are my favorite person, my safe place, and my best story so far. ",
     "Happy almost birthday, my love. I can't wait to hold you and tell you in person how much you mean to me. 🤍"
   ].join("");
+  const msgToday = "Happy Birthday, my love! 🎂\n\nToday is all yours. Thank you for being you, for every laugh and every quiet moment since May 1, 2022. I love you more than words can say. 🤍";
+  function isBirthdayToday(){ const n = new Date(); return n.getMonth() === 9 && n.getDate() === 4; }
+  function currentMessage(){ return isBirthdayToday() ? msgToday : msgBefore; }
 
   // fly one little heart from the tree to a target element, then reveal it (heart "becomes" the letter)
   function flyLetterHeart(targetEl){
@@ -608,34 +618,44 @@
     }, FLIGHT);
   }
 
+  // split into whole letters: keeps Lao tone marks / vowels and emoji together
+  function splitGraphemes(str){
+    let segs = Array.from(str);
+    if (window.Intl && Intl.Segmenter) {
+      segs = Array.from(new Intl.Segmenter(undefined, {granularity:'grapheme'}).segment(str), x => x.segment);
+    }
+    const out = []; let carry = '';
+    segs.forEach(g => {
+      if ('ເແໂໃໄ'.includes(g)) carry += g;   // Lao leading vowels stay with the next letter
+      else { out.push(carry + g); carry = ''; }
+    });
+    if (carry) out.push(carry);
+    return out;
+  }
+
   function startTypewriter(){
     const msgEl = document.getElementById('message');
     msgEl.innerHTML = '';
     const cursor = document.createElement('span');
     cursor.className = 'cursor';
-    msgEl.appendChild(cursor);
-
-    const chars = Array.from(lines); // Array.from keeps emoji as one whole character
+    const spans = splitGraphemes(currentMessage()).map(ch => {
+      const span = document.createElement('span');
+      span.textContent = ch;
+      span.style.opacity = '0';
+      span.style.transition = 'opacity .3s ease';
+      msgEl.appendChild(span);
+      return span;
+    });
+    msgEl.insertBefore(cursor, spans[0]);
     let i = 0;
-
     function typeNext(){
-      if (i < chars.length) {
-        const ch = chars[i];
-        const span = document.createElement('span');
-        span.textContent = ch;
-        span.style.opacity = '0';
-        span.style.transition = 'opacity .3s ease';
-        msgEl.insertBefore(span, cursor);
-
-        if (ch.trim() === '') {
-          span.style.opacity = '1'; // spaces/line breaks: no heart needed, just show
-        } else {
-          flyLetterHeart(span);
-        }
-
-        i++;
-        setTimeout(typeNext, 28);
-      }
+      if (i >= spans.length) return;
+      const span = spans[i];
+      if (span.textContent.trim() === '') span.style.opacity = '1';
+      else flyLetterHeart(span);
+      if (spans[i + 1]) msgEl.insertBefore(cursor, spans[i + 1]);
+      i++;
+      setTimeout(typeNext, 28);
     }
     typeNext();
   }
@@ -653,6 +673,11 @@
   function pad(n){ return String(n).padStart(2, '0'); }
   function startCountdown(){
     function tick(){
+      if (isBirthdayToday()) {
+        document.querySelector('.countdown-label').textContent = 'Today is your birthday 🎂';
+        document.getElementById('countdownLine').textContent = 'Happy Birthday, Dola!';
+        return;
+      }
       const diff = Math.max(0, nextBirthday() - new Date());
       const d = Math.floor(diff / 86400000);
       const h = Math.floor((diff % 86400000) / 3600000);
@@ -716,23 +741,25 @@
     burst(rect.left + rect.width/2, rect.top + rect.height/2);
 
     introStage.classList.add('hide');
-    contentStage.classList.add('show');
     cornerHeart.classList.add('show');
 
-    // 1) the roots, trunk and branches draw themselves in, one after another (~5s to fully fan out)
-    document.querySelectorAll('.tree-path').forEach(p => { p.style.strokeDashoffset = '0'; });
-
-    // 2) once the branches are out, the heart-leaves bloom on them (~4s to fully bloom)
     setTimeout(() => {
-      buildCanopy();
-      spawnPetals();
-    }, 5000);
+      introStage.classList.add('gone');
+      contentStage.classList.add('open');
+      prepareTreePaths();
+      void contentStage.offsetWidth;
+      contentStage.classList.add('show');
+      // 1) roots, trunk and branches draw themselves in
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.tree-path').forEach(p => { p.style.strokeDashoffset = '0'; });
+      });
+      // 2) heart-leaves bloom, 3) hearts fly off to become the message
+      setTimeout(() => { buildCanopy(); spawnPetals(); }, 5000);
+      setTimeout(startTypewriter, 9300);
+    }, 450);
 
     startCountdown();
     startTogether();
-
-    // 3) once the tree is fully bloomed, its little hearts drift off one by one to become the message
-    setTimeout(startTypewriter, 9300);
   }, { once: true });
 </script>
 
