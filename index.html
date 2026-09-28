@@ -380,6 +380,38 @@
     .intro-stage{ position:relative; min-height: 300px; }
   }
 
+  /* ---- toolbar (language / skip / music) ---- */
+  .tools{ position:relative; z-index:3; display:flex; gap:8px; flex-wrap:wrap; justify-content:center; visibility:hidden; opacity:0; transition:opacity .5s ease; }
+  .tools.on{ visibility:visible; opacity:1; }
+  .tbtn{ background:rgba(255,255,255,.08); border:1px solid rgba(242,163,182,.4); color:var(--cream); border-radius:999px; padding:7px 15px; font:inherit; font-size:.82rem; cursor:pointer; touch-action:manipulation; }
+  .tbtn.active{ background:var(--rose-deep); border-color:var(--rose-deep); }
+  .tbtn[hidden]{ display:none; }
+
+  /* ---- after the message: reasons, photos, love button ---- */
+  .extras{ display:none; margin-top:22px; padding-top:18px; border-top:1px solid rgba(74,33,48,.15); position:relative; z-index:2; }
+  .extras.on{ display:block; animation: fadeUp .8s ease both; padding-bottom:26px; }
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;} }
+  .extras h3{ font-family:'Cormorant Garamond','Noto Serif Lao',serif; font-style:italic; font-weight:500; font-size:1.05rem; color:#8a5064; margin:0 0 8px; }
+  .reason{ background:rgba(255,255,255,.55); border-radius:16px; padding:16px 18px; min-height:78px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .reason p{ margin:0; font-family:'Cormorant Garamond','Noto Serif Lao',serif; font-size:1.18rem; line-height:1.45; color:var(--ink); }
+  .reason .nextbtn{ flex:0 0 auto; background:none; border:1px solid var(--rose-deep); color:var(--rose-deep); border-radius:999px; padding:6px 12px; font:inherit; font-size:.78rem; cursor:pointer; touch-action:manipulation; }
+  .reason-count{ font-size:.72rem; color:#8a5064; margin:6px 2px 0; }
+  .gallery-wrap{ margin-top:20px; }
+  .gallery{ display:flex; gap:10px; overflow-x:auto; padding:4px 0 8px; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; }
+  .gallery figure{ margin:0; flex:0 0 62%; scroll-snap-align:start; }
+  .gallery img{ display:block; width:100%; height:230px; object-fit:cover; border-radius:14px; }
+  .gallery figcaption{ font-size:.78rem; color:#8a5064; margin-top:4px; }
+  .love-btn{ display:block; width:100%; margin-top:22px; padding:15px 18px; border:none; border-radius:999px; background:linear-gradient(135deg,var(--rose),var(--rose-deep)); color:#fff; font:inherit; font-weight:500; font-size:1rem; cursor:pointer; touch-action:manipulation; box-shadow:0 10px 24px rgba(199,58,94,.4); animation: pulse 2s ease-in-out infinite; }
+
+  /* ---- final full-screen love note ---- */
+  .overlay{ position:fixed; inset:0; z-index:50; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:14px; padding:8vw; background:rgba(36,8,26,.94); opacity:0; pointer-events:none; transition:opacity .6s ease; }
+  .overlay.on{ opacity:1; pointer-events:auto; }
+  .overlay .big{ font-family:'Cormorant Garamond','Noto Serif Lao',serif; font-size:clamp(2rem,9vw,3.4rem); font-weight:600; color:var(--rose-soft); margin:0; line-height:1.25; }
+  .overlay .small{ font-size:1rem; color:var(--cream); margin:0; }
+  .overlay .close{ font-size:.75rem; color:rgba(242,230,216,.5); margin-top:26px; }
+
+  .heartTree.instant i, .canopy.instant i{ animation:none !important; opacity:1 !important; transform: scale(var(--s,1)) rotate(var(--r,0deg)) !important; }
+
   @media (prefers-reduced-motion: reduce){
     .drift, .canopy, .heartTree i, .petal, .message .cursor, .intro-heart .pulse-wrap{ animation: none !important; }
     .heartTree i{ opacity:1; transform: scale(var(--s,1)) rotate(var(--r,0deg)); }
@@ -398,6 +430,13 @@
     for Dola
   </p>
 
+  <div class="tools" id="tools">
+    <button class="tbtn" id="langLo" type="button">ລາວ</button>
+    <button class="tbtn" id="langEn" type="button">EN</button>
+    <button class="tbtn" id="skipBtn" type="button"></button>
+    <button class="tbtn" id="musicBtn" type="button" hidden>♪</button>
+  </div>
+
   <div class="card">
 
     <div class="intro-stage" id="introStage">
@@ -406,7 +445,7 @@
           <span class="heartlet shape"></span>
         </span>
       </button>
-      <p class="intro-hint">tap the heart</p>
+      <p class="intro-hint" id="introHint">ແຕະຫົວໃຈ</p>
     </div>
 
     <div class="content-stage" id="contentStage">
@@ -414,9 +453,9 @@
         <p class="message" id="message"></p>
         <div class="countdown-block">
           <hr class="divider">
-          <p class="countdown-label">Counting down to your birthday…</p>
-          <p class="countdown-line" id="countdownLine">00 days 00 hrs 00 min 00 sec</p>
-          <p class="together">Together for <b id="togetherDays">0</b> days since <b>May 1, 2022</b></p>
+          <p class="countdown-label" id="countdownLabel"></p>
+          <p class="countdown-line" id="countdownLine"></p>
+          <p class="together" id="togetherP"></p>
         </div>
       </div>
 
@@ -469,11 +508,33 @@
       </div>
     </div>
 
+    <div class="extras" id="extras">
+      <h3 id="reasonsTitle"></h3>
+      <div class="reason">
+        <p id="reasonText"></p>
+        <button class="nextbtn" id="reasonNext" type="button"></button>
+      </div>
+      <p class="reason-count" id="reasonCount"></p>
+
+      <div class="gallery-wrap" id="galleryWrap" hidden>
+        <h3 id="photosTitle"></h3>
+        <div class="gallery" id="gallery"></div>
+      </div>
+
+      <button class="love-btn" id="loveBtn" type="button"></button>
+    </div>
+
     <div class="heartlet corner-heart" id="cornerHeart"></div>
   </div>
 </main>
 
-<footer>made with love, just for you</footer>
+<div class="overlay" id="overlay">
+  <p class="big" id="loveBig"></p>
+  <p class="small" id="loveSmall"></p>
+  <p class="close" id="loveClose"></p>
+</div>
+
+<footer id="footerText"></footer>
 
 <script>
   const colors = ['#e0577a','#e0577a','#c73a5e','#c73a5e','#a8283f','#f2a3b6','#f2a3b6','#f6c6d2','#d9b26a'];
@@ -555,17 +616,83 @@
     }
   }
 
-  // ---- message text, and little hearts that fly from the tree and become each letter ----
-  const msgBefore = [
-    "My dearest Dola,\n\n",
-    "your birthday is almost here, and I can't stop smiling just thinking about it. ",
-    "Since May 1, 2022, every single day with you has felt like a gift I didn't know I needed. ",
-    "You are my favorite person, my safe place, and my best story so far. ",
-    "Happy almost birthday, my love. I can't wait to hold you and tell you in person how much you mean to me. 🤍"
-  ].join("");
-  const msgToday = "Happy Birthday, my love! 🎂\n\nToday is all yours. Thank you for being you, for every laugh and every quiet moment since May 1, 2022. I love you more than words can say. 🤍";
+  // =====================================================================
+  //  ✏️  EDIT HERE — your words, photos and music
+  // =====================================================================
+  const MSG = {
+    lo: {
+      before: "ໂດລາທີ່ຮັກ,\n\nວັນເກີດຂອງເຈົ້າໃກ້ຈະມາເຖິງແລ້ວ ແລະ ຂ້ອຍກໍຍິ້ມບໍ່ຢຸດເລີຍເມື່ອຄິດເຖິງມັນ. ຕັ້ງແຕ່ວັນທີ 1 ພຶດສະພາ 2022 ທຸກໆມື້ທີ່ໄດ້ຢູ່ກັບເຈົ້າຄືຂອງຂວັນທີ່ຂ້ອຍບໍ່ເຄີຍຮູ້ມາກ່ອນວ່າຂ້ອຍຕ້ອງການ. ເຈົ້າຄືຄົນທີ່ຂ້ອຍຮັກທີ່ສຸດ, ເປັນບ່ອນປອດໄພຂອງຂ້ອຍ ແລະ ເປັນເລື່ອງລາວທີ່ດີທີ່ສຸດຂອງຂ້ອຍ. ສຸກສັນວັນເກີດລ່ວງໜ້າເດີ້ ຄົນດີຂອງຂ້ອຍ. ຂ້ອຍລໍຖ້າວັນທີ່ຈະໄດ້ກອດເຈົ້າ ແລະ ບອກເຈົ້າດ້ວຍຕົວເອງວ່າເຈົ້າສຳຄັນກັບຂ້ອຍຫຼາຍປານໃດ 🤍",
+      today:  "ສຸກສັນວັນເກີດ ທີ່ຮັກຂອງຂ້ອຍ! 🎂\n\nມື້ນີ້ເປັນມື້ຂອງເຈົ້າທັງມື້. ຂອບໃຈສຳລັບທຸກຮອຍຍິ້ມ ແລະ ທຸກຊ່ວງເວລາງຽບໆ ຕັ້ງແຕ່ວັນທີ 1 ພຶດສະພາ 2022. ຂ້ອຍຮັກເຈົ້າຫຼາຍກວ່າທີ່ຄຳເວົ້າຈະບອກໄດ້ 🤍"
+    },
+    en: {
+      before: "My dearest Dola,\n\nyour birthday is almost here, and I can't stop smiling just thinking about it. Since May 1, 2022, every single day with you has felt like a gift I didn't know I needed. You are my favorite person, my safe place, and my best story so far. Happy almost birthday, my love. I can't wait to hold you and tell you in person how much you mean to me. 🤍",
+      today:  "Happy Birthday, my love! 🎂\n\nToday is all yours. Thank you for every smile and every quiet moment since May 1, 2022. I love you more than words can say. 🤍"
+    }
+  };
+
+  // "reasons I love you" — replace these with YOUR real, personal reasons
+  const REASONS = {
+    lo: [
+      "ເຈົ້າເຮັດໃຫ້ມື້ທຳມະດາກາຍເປັນມື້ພິເສດ",
+      "ຮອຍຍິ້ມຂອງເຈົ້າເຮັດໃຫ້ຂ້ອຍລືມຄວາມເມື່ອຍໄດ້ທັນທີ",
+      "ເຈົ້າຢູ່ຂ້າງຂ້ອຍ ໃນມື້ທີ່ຂ້ອຍບໍ່ເກັ່ງທີ່ສຸດ",
+      "ຢູ່ກັບເຈົ້າ ຂ້ອຍຮູ້ສຶກຄືຢູ່ບ້ານ",
+      "ເພາະເຈົ້າຄືເຈົ້າ ແລະ ຂ້ອຍຮັກທຸກຢ່າງທີ່ເປັນເຈົ້າ"
+    ],
+    en: [
+      "You turn ordinary days into special ones",
+      "Your smile makes me forget I'm tired",
+      "You stay beside me on my worst days",
+      "With you, I feel at home",
+      "Because you are you, and I love everything that is you"
+    ]
+  };
+
+  // photos: put image files next to index.html (or in a "photos" folder) and list them here
+  // example:  { src: "photos/1.jpg", caption: { lo: "ຄັ້ງທຳອິດທີ່ເຮົາພົບກັນ", en: "The day we met" } }
+  const photos = [];
+
+  // background music: put a file named music.mp3 next to index.html (button appears automatically)
+  const MUSIC_SRC = "music.mp3";
+
+  // interface text
+  const I18N = {
+    lo: {
+      hint: "ແຕະຫົວໃຈ", label: "ນັບຖອຍຫຼັງສູ່ວັນເກີດຂອງເຈົ້າ…",
+      bdayLabel: "ມື້ນີ້ແມ່ນວັນເກີດຂອງເຈົ້າ 🎂", bdayLine: "ສຸກສັນວັນເກີດ, Dola!",
+      cd: (d,h,m,s) => `${d} ມື້ ${h} ຊົ່ວໂມງ ${m} ນາທີ ${s} ວິນາທີ`,
+      together: n => `ຢູ່ນຳກັນມາ <b>${n}</b> ມື້ ຕັ້ງແຕ່ <b>1 ພຶດສະພາ 2022</b>`,
+      footer: "ເຮັດດ້ວຍຄວາມຮັກ ເພື່ອເຈົ້າຄົນດຽວ",
+      skip: "ຂ້າມ ›", next: "ຕໍ່ໄປ ›",
+      reasons: "ເຫດຜົນທີ່ຂ້ອຍຮັກເຈົ້າ", photos: "ຄວາມຊົງຈຳຂອງເຮົາ",
+      love: "ແຕະເມື່ອເຈົ້າຮູ້ວ່າຂ້ອຍຮັກເຈົ້າ 🤍",
+      loveBig: "ຂ້ອຍຮັກເຈົ້າ, Dola", loveSmall: "ມື້ນີ້ ມື້ອື່ນ ແລະ ທຸກໆມື້", close: "ແຕະເພື່ອປິດ"
+    },
+    en: {
+      hint: "tap the heart", label: "Counting down to your birthday…",
+      bdayLabel: "Today is your birthday 🎂", bdayLine: "Happy Birthday, Dola!",
+      cd: (d,h,m,s) => `${d} days ${h} hrs ${m} min ${s} sec`,
+      together: n => `Together for <b>${n}</b> days since <b>May 1, 2022</b>`,
+      footer: "made with love, just for you",
+      skip: "Skip ›", next: "Next ›",
+      reasons: "Why I love you", photos: "Our memories",
+      love: "Tap if you know I love you 🤍",
+      loveBig: "I love you, Dola", loveSmall: "Today, tomorrow, and every day", close: "tap to close"
+    }
+  };
+
+  // =====================================================================
+  const $ = id => document.getElementById(id);
+  let lang = 'lo';
+  try { lang = localStorage.getItem('dola-lang') || 'lo'; } catch(e){}
+  if (!I18N[lang]) lang = 'lo';
+
+  const timers = [];
+  const later = (fn, ms) => { const id = setTimeout(fn, ms); timers.push(id); return id; };
+  let typing = 0, messageStarted = false, extrasShown = false, canopyBuilt = false, reasonIdx = 0;
+
   function isBirthdayToday(){ const n = new Date(); return n.getMonth() === 9 && n.getDate() === 4; }
-  function currentMessage(){ return isBirthdayToday() ? msgToday : msgBefore; }
+  function currentMessage(){ return MSG[lang][isBirthdayToday() ? 'today' : 'before']; }
 
   // fly one little heart from the tree to a target element, then reveal it (heart "becomes" the letter)
   function flyLetterHeart(targetEl){
@@ -633,8 +760,22 @@
     return out;
   }
 
+
+  function ensureCanopy(){
+    if (canopyBuilt) return;
+    canopyBuilt = true;
+    buildCanopy();
+    spawnPetals();
+  }
+
+  function finishTyping(token){
+    later(() => { if (token === typing) revealExtras(); }, 800);
+  }
+
   function startTypewriter(){
-    const msgEl = document.getElementById('message');
+    const token = ++typing;
+    messageStarted = true;
+    const msgEl = $('message');
     msgEl.innerHTML = '';
     const cursor = document.createElement('span');
     cursor.className = 'cursor';
@@ -649,15 +790,24 @@
     msgEl.insertBefore(cursor, spans[0]);
     let i = 0;
     function typeNext(){
-      if (i >= spans.length) return;
+      if (token !== typing) return;
+      if (i >= spans.length) { finishTyping(token); return; }
       const span = spans[i];
       if (span.textContent.trim() === '') span.style.opacity = '1';
       else flyLetterHeart(span);
       if (spans[i + 1]) msgEl.insertBefore(cursor, spans[i + 1]);
       i++;
-      setTimeout(typeNext, 28);
+      later(typeNext, 28);
     }
     typeNext();
+  }
+
+  // show the whole message at once (used by Skip and when switching language)
+  function showFull(){
+    typing++;
+    messageStarted = true;
+    $('message').textContent = currentMessage();
+    revealExtras();
   }
 
   // ---- countdown to next birthday (Oct 4) ----
@@ -671,35 +821,28 @@
     return target;
   }
   function pad(n){ return String(n).padStart(2, '0'); }
-  function startCountdown(){
-    function tick(){
-      if (isBirthdayToday()) {
-        document.querySelector('.countdown-label').textContent = 'Today is your birthday 🎂';
-        document.getElementById('countdownLine').textContent = 'Happy Birthday, Dola!';
-        return;
-      }
-      const diff = Math.max(0, nextBirthday() - new Date());
-      const d = Math.floor(diff / 86400000);
-      const h = Math.floor((diff % 86400000) / 3600000);
-      const m = Math.floor((diff % 3600000) / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
-      document.getElementById('countdownLine').textContent =
-        `${pad(d)} days ${pad(h)} hrs ${pad(m)} min ${pad(s)} sec`;
-    }
-    tick();
-    setInterval(tick, 1000);
-  }
 
-  // ---- together-since counter ----
-  function startTogether(){
-    function tick(){
-      const start = new Date(2022, 4, 1, 0, 0, 0);
-      const days = Math.floor((new Date() - start) / 86400000);
-      document.getElementById('togetherDays').textContent = days.toLocaleString();
+  function updateCountdown(){
+    const t = I18N[lang];
+    if (isBirthdayToday()) {
+      $('countdownLabel').textContent = t.bdayLabel;
+      $('countdownLine').textContent = t.bdayLine;
+      return;
     }
-    tick();
-    setInterval(tick, 60000);
+    const diff = Math.max(0, nextBirthday() - new Date());
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    $('countdownLabel').textContent = t.label;
+    $('countdownLine').textContent = t.cd(pad(d), pad(h), pad(m), pad(s));
   }
+  function updateTogether(){
+    const days = Math.floor((new Date() - new Date(2022, 4, 1, 0, 0, 0)) / 86400000);
+    $('togetherP').innerHTML = I18N[lang].together(days.toLocaleString());
+  }
+  function startCountdown(){ updateCountdown(); setInterval(updateCountdown, 1000); }
+  function startTogether(){ updateTogether(); setInterval(updateTogether, 60000); }
 
   // ---- heart bursting into little pieces ----
   function burst(x, y){
@@ -729,12 +872,106 @@
     }
   }
 
+
+  // ---- reasons carousel, photos, love button ----
+  function renderReasons(){
+    const list = REASONS[lang];
+    reasonIdx = reasonIdx % list.length;
+    $('reasonText').textContent = list[reasonIdx];
+    $('reasonCount').textContent = (reasonIdx + 1) + ' / ' + list.length;
+  }
+  function renderGallery(){
+    const wrap = $('galleryWrap'), g = $('gallery');
+    if (!photos.length) { wrap.hidden = true; return; }
+    wrap.hidden = false;
+    g.innerHTML = '';
+    photos.forEach(ph => {
+      const fig = document.createElement('figure');
+      const img = document.createElement('img');
+      img.src = ph.src; img.alt = ''; img.loading = 'lazy';
+      fig.appendChild(img);
+      const cap = ph.caption && (ph.caption[lang] || ph.caption.lo || ph.caption.en);
+      if (cap) { const fc = document.createElement('figcaption'); fc.textContent = cap; fig.appendChild(fc); }
+      g.appendChild(fig);
+    });
+  }
+  function revealExtras(){
+    renderReasons();
+    renderGallery();
+    $('skipBtn').hidden = true;
+    if (extrasShown) return;
+    extrasShown = true;
+    $('extras').classList.add('on');
+  }
+
+  // ---- language ----
+  function renderStatic(){
+    const t = I18N[lang];
+    $('introHint').textContent = t.hint;
+    $('footerText').textContent = t.footer;
+    $('skipBtn').textContent = t.skip;
+    $('reasonNext').textContent = t.next;
+    $('reasonsTitle').textContent = t.reasons;
+    $('photosTitle').textContent = t.photos;
+    $('loveBtn').textContent = t.love;
+    $('loveBig').textContent = t.loveBig;
+    $('loveSmall').textContent = t.loveSmall;
+    $('loveClose').textContent = t.close;
+    $('langLo').classList.toggle('active', lang === 'lo');
+    $('langEn').classList.toggle('active', lang === 'en');
+    document.documentElement.lang = lang === 'lo' ? 'lo' : 'en';
+    updateCountdown();
+    updateTogether();
+    if (extrasShown) { renderReasons(); renderGallery(); }
+  }
+  function setLang(l){
+    if (l === lang) return;
+    lang = l;
+    try { localStorage.setItem('dola-lang', l); } catch(e){}
+    renderStatic();
+    if (messageStarted) showFull();
+  }
+  $('langLo').addEventListener('click', () => setLang('lo'));
+  $('langEn').addEventListener('click', () => setLang('en'));
+  renderStatic();
+
+  $('reasonNext').addEventListener('click', () => { reasonIdx++; renderReasons(); });
+
+  $('loveBtn').addEventListener('click', () => {
+    const r = $('loveBtn').getBoundingClientRect();
+    burst(r.left + r.width/2, r.top + r.height/2);
+    later(() => burst(window.innerWidth * 0.3, window.innerHeight * 0.5), 200);
+    later(() => burst(window.innerWidth * 0.7, window.innerHeight * 0.45), 400);
+    $('overlay').classList.add('on');
+    later(() => burst(window.innerWidth * 0.5, window.innerHeight * 0.35), 700);
+  });
+  $('overlay').addEventListener('click', () => $('overlay').classList.remove('on'));
+
+  // ---- music (button appears only if music.mp3 exists) ----
+  const audio = new Audio();
+  audio.loop = true;
+  audio.preload = 'auto';
+  audio.addEventListener('canplaythrough', () => { $('musicBtn').hidden = false; }, { once: true });
+  const syncMusicBtn = () => $('musicBtn').classList.toggle('active', !audio.paused);
+  audio.addEventListener('play', syncMusicBtn);
+  audio.addEventListener('pause', syncMusicBtn);
+  audio.src = MUSIC_SRC;
+  $('musicBtn').addEventListener('click', () => { audio.paused ? audio.play().catch(() => {}) : audio.pause(); });
+
+  // ---- skip ----
+  $('skipBtn').addEventListener('click', () => {
+    timers.forEach(clearTimeout); timers.length = 0;
+    document.querySelectorAll('.tree-path').forEach(p => { p.style.transition = 'none'; p.style.strokeDashoffset = '0'; });
+    ensureCanopy();
+    $('canopy').classList.add('instant');
+    showFull();
+  });
+
   // ---- the open sequence ----
-  const introHeart = document.getElementById('introHeart');
-  const introStage = document.getElementById('introStage');
-  const contentStage = document.getElementById('contentStage');
-  const treeGrow = document.getElementById('treeGrow');
-  const cornerHeart = document.getElementById('cornerHeart');
+  const introHeart = $('introHeart');
+  const introStage = $('introStage');
+  const contentStage = $('contentStage');
+  const cornerHeart = $('cornerHeart');
 
   introHeart.addEventListener('click', () => {
     const rect = introHeart.getBoundingClientRect();
@@ -742,8 +979,10 @@
 
     introStage.classList.add('hide');
     cornerHeart.classList.add('show');
+    $('tools').classList.add('on');
+    audio.play().catch(() => {});   // starts music if music.mp3 is present (allowed: user just tapped)
 
-    setTimeout(() => {
+    later(() => {
       introStage.classList.add('gone');
       contentStage.classList.add('open');
       prepareTreePaths();
@@ -753,9 +992,9 @@
       requestAnimationFrame(() => {
         document.querySelectorAll('.tree-path').forEach(p => { p.style.strokeDashoffset = '0'; });
       });
-      // 2) heart-leaves bloom, 3) hearts fly off to become the message
-      setTimeout(() => { buildCanopy(); spawnPetals(); }, 5000);
-      setTimeout(startTypewriter, 9300);
+      // 2) heart-leaves bloom  3) hearts fly off to become the message
+      later(ensureCanopy, 5000);
+      later(startTypewriter, 9300);
     }, 450);
 
     startCountdown();
